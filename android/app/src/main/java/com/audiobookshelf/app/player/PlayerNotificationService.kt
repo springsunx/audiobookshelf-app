@@ -330,11 +330,14 @@ class PlayerNotificationService : MediaBrowserServiceCompat()  {
         }
 
         val extra = Bundle()
-        extra.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, currentPlaybackSession!!.displayAuthor)
+        extra.putString(
+          MediaMetadataCompat.METADATA_KEY_ARTIST,
+          currentPlaybackSession!!.displayAuthor + " | " + currentPlaybackSession!!.displayTitle
+        )
 
         val mediaDescriptionBuilder = MediaDescriptionCompat.Builder()
           .setExtras(extra)
-          .setTitle(currentPlaybackSession!!.displayTitle)
+          .setTitle(getCurrentBookChapter()?.title)
 
         bitmap?.let {
           mediaDescriptionBuilder.setIconBitmap(it)
@@ -507,8 +510,8 @@ class PlayerNotificationService : MediaBrowserServiceCompat()  {
     val mediaItems = playbackSession.getMediaItems(ctx)
     val customActionProviders = mutableListOf(
       JumpBackwardCustomActionProvider(),
-      JumpForwardCustomActionProvider(),
-      ChangePlaybackSpeedCustomActionProvider() // Will be pushed to far left
+      JumpForwardCustomActionProvider()
+      //ChangePlaybackSpeedCustomActionProvider() // Will be pushed to far left
     )
     if (playbackSession.mediaPlayer != PLAYER_CAST && mediaItems.size > 1) {
       customActionProviders.addAll(listOf(
