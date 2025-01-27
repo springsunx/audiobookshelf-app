@@ -68,6 +68,10 @@
               <span class="material-icons">more_vert</span>
             </ui-btn>
           </div>
+          <ui-btn v-else-if="isMissing" color="error" :padding-x="4" small class="mt-4 flex items-center justify-center w-full" @click="clickMissingButton">
+            <span class="material-icons">error</span>
+            <span class="px-1 text-base">{{ $strings.LabelMissing }}</span>
+          </ui-btn>
 
           <div v-if="!isPodcast && progressPercent > 0" class="px-4 py-2 bg-primary text-sm font-semibold rounded-md text-fg mt-4 text-center">
             <p>{{ $strings.LabelYourProgress }}: {{ Math.round(progressPercent * 100) }}%</p>
@@ -135,7 +139,7 @@
         </div>
 
         <div v-if="description" class="w-full py-2">
-          <p ref="description" class="text-sm text-justify whitespace-pre-line font-light" :class="{ 'line-clamp-4': !showFullDescription }" style="hyphens: auto">{{ description }}</p>
+          <div ref="description" class="default-style less-spacing text-sm text-justify whitespace-pre-line font-light" :class="{ 'line-clamp-4': !showFullDescription }" style="hyphens: auto" v-html="description" />
 
           <div v-if="descriptionClamped" class="text-fg text-sm py-2" @click="showFullDescription = !showFullDescription">
             {{ showFullDescription ? $strings.ButtonReadLess : $strings.ButtonReadMore }}
@@ -486,6 +490,13 @@ export default {
     }
   },
   methods: {
+    clickMissingButton() {
+      Dialog.alert({
+        title: this.$strings.LabelMissing,
+        message: this.$strings.MessageItemMissing,
+        cancelText: this.$strings.ButtonOk
+      })
+    },
     async coverImageLoaded(fullCoverUrl) {
       if (!fullCoverUrl) return
 
